@@ -1,4 +1,6 @@
 from flask import Flask, request
+import requests
+import json
 
 app = Flask(__name__)
 app.debug = True
@@ -43,8 +45,14 @@ def enterData():
 @app.route('/result',methods = ['POST', 'GET'])
 def displayData():
     if request.method == 'POST':
-        Submit = request.form["ingredient"]
-        return '<h1>{}<h1>'.format(Submit)
+        ingredient = request.form["ingredient"]
+        recipePuppyAPIResponse = "http://www.recipepuppy.com/api/?q=" + ingredient + "&format=xml"
+        response = requests.get(recipePuppyAPIResponse)
+        recipes = []
+        for var in response.json()["results"]:
+            recipes.append(var["title"])
+
+        return '<p>{}<p>'.join(recipes)
     else:
         return '<h1>No information<h1>'
 
