@@ -17,12 +17,12 @@ def course(course):
 
 # Task 3.1
 # Edit the HTML form such that form data is sent to localhost:5000/result using POST method
-@app.route('/form')
+@app.route('/form',methods = ['POST', 'GET'])
 def enterData():
     s = """<!DOCTYPE html>
 <html>
 <body>
-<form>
+<form method="POST" action="/result">
   INGREDIENT:<br>
   <input type="text" name="ingredient" value="eggs">
   <br>
@@ -31,6 +31,9 @@ def enterData():
 </body>
 </html>"""
 # Note that by default eggs would be entered in the input field
+    if request.method == 'POST':
+        return redirect(url_for('result', result=request.form["Submit"]))
+
     return s
 
 
@@ -40,7 +43,10 @@ def enterData():
 @app.route('/result',methods = ['POST', 'GET'])
 def displayData():
     if request.method == 'POST':
-        pass
+        Submit = request.form["ingredient"]
+        return '<h1>{}<h1>'.format(Submit)
+    else:
+        return '<h1>No information<h1>'
 
 ## Task 4
 ## Note : Since this is a dyanmic URL, recipes function should recieve a paramter called `ingrdient` 
